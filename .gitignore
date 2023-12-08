@@ -1,0 +1,15 @@
+
+slhtml
+manpage.html
+## -- BLOCK:c --
+*.o
+*.a
+*.so
+*.so.*
+TAGS
+FLYCHECK
+## -- BLOCK:c --
+## -- BLOCK:license --
+## -- BLOCK:license --
+## -- BLOCK:man --
+## -- BLOCK:man --
