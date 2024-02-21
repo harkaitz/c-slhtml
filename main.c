@@ -22,14 +22,14 @@ int main (int _argc, char *_argv[]) {
     int            opt,err;
     int            ret        = 1;
     char          *m_buf      = NULL;
-    size_t         m_bufsz    = 10*1024;
+    size_t         m_bufsz    = 10*1024*1024;
     FILE          *fp         = NULL;
     slhtml_t       slhtml     = { .cmd = cmd, .snd = snd };
     const char    *executable = NULL;
     size_t         datasz;
     
     /* Parse command line arguments. */
-    if (_argc == 1 || !strcmp(_argv[1], "-h") || !strcmp(_argv[1], "--help")) {
+    if (_argc > 1 && (!strcmp(_argv[1], "-h") || !strcmp(_argv[1], "--help"))) {
         fputs(HELP, stderr);
         return 1;
     }

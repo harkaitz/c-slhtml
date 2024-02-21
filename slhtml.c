@@ -3,14 +3,21 @@
 #include <stdbool.h>
 
 size_t slhtml_findtag(char *b, char *tags[], size_t tagsz, char **_found) {
-    size_t i;
-    size_t j;
+    size_t i, j, l;
     for (i=0; b[i]!='\0'; i++) {
         for (j=0; j<tagsz; j++) {
             if (b[i]==tags[j][0]) {
-                if (strncmp(b+i, tags[j], strlen(tags[j]))==0) {
-                    if (_found) *_found = tags[j]+1;
-                    return i;
+                l = strlen(tags[j]);
+                if (!strncmp(b+i, tags[j], l)) {
+                    if (_found) {
+                        char c = *(b+i+l);
+                        if (!c || strchr(" \r\n\t/><", c)) {
+                            *_found = tags[j]+1;
+                            return i;
+                        }
+                    } else {
+                       return i;
+                    }
                 }
             }
         }
@@ -19,7 +26,7 @@ size_t slhtml_findtag(char *b, char *tags[], size_t tagsz, char **_found) {
 }
 
 int    slhtml_process(slhtml_t *_s, char *_istr) {
-    char          *ptr = _istr;
+    char          *ptr = _istr,*nxt;
     size_t         shift;
     char          *found = NULL;
     
@@ -83,6 +90,10 @@ int    slhtml_process(slhtml_t *_s, char *_istr) {
         }
     } else {
         data = "";
+    }
+
+    while ((nxt = strchr(tag, '\n'))) {
+       *nxt = ' ';
     }
     
     int ret = _s->cmd(_s->udata, tag, data);
