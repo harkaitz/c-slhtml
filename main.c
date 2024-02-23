@@ -50,8 +50,7 @@ int main (int _argc, char *_argv[]) {
         setenv("SLHTML_SCRIPT", _argv[optind], 1);
     }
     if (!(executable = getenv("SLHTML_SCRIPT"))) {
-        error("Please specify an input script.");
-        goto cleanup;
+        return system("cat");
     }
     
     /* Execute "${SLHTML_SCRIPT} --list" to get a list of tags. */
