@@ -10,7 +10,9 @@ clean:
 	rm -f slhtml$(EXE)
 install:
 	install -D -m 755 slhtml$(EXE) $(DESTDIR)$(PREFIX)/bin/slhtml$(EXE)
+	install -D -m 755 slhtml-h     $(DESTDIR)$(PREFIX)/bin/slhtml-h
 uninstall:
+	rm -f $(DESTDIR)$(PREFIX)/bin/slhtml$(EXE)
 	rm -f $(DESTDIR)$(PREFIX)/bin/slhtml$(EXE)
 ## -- BLOCK:c --
 clean: clean-c

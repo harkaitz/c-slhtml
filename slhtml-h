@@ -1,0 +1,59 @@
+#!/bin/sh -e
+##:
+#h: Usage: slhtml-h -i IDIR -o ODIR -s SCRIPT
+#h:
+#h: Process all "*.sl.*" files in IDIR and put the output
+#h: in ODIR with "*.o.*" format. 
+##:
+slhtml_h() {
+    local OPTIND optopt idir= odir= script= ifile ofile
+    
+    ## Parse command line arguments.
+    while getopts "i:o:s:" optopt; do
+        case $optopt in
+            i)  idir="${OPTARG}";;
+            o)  odir="${OPTARG}";;
+            s)  script="${OPTARG}";;
+            \?) return 1;;
+        esac
+    done
+    shift $(( $OPTIND - 1 ))
+    
+    ## Check for missing arguments.
+    if test ! -n "${idir}"; then
+        echo >&2 "error: Missing -i argument."
+        return 1
+    elif test ! -n "${odir}"; then
+        echo >&2 "error: missing -o argument."
+        return 1
+    elif test ! -n "${script}"; then
+        echo >&2 "error: missing -s argument."
+        return 1
+    elif test ! -d "${idir}"; then
+        echo >&2 "error: ${idir} is not a directory."
+        return 1
+    elif test ! -d "${odir}"; then
+        echo >&2 "error: ${odir} is not a directory."
+        return 1
+    elif test ! -f "${script}"; then
+        echo >&2 "error: ${script} is not a file."
+        return 1
+    fi
+    
+    for ifile in $(find "${idir}" -name "*.sl.*"); do
+        
+        ofile="${odir}/$(basename "${ifile}" | sed 's/\.sl\./.o./')"
+        
+        echo >&2 "${ofile} <- ${ifile}"
+        slhtml "${script}" < "${ifile}" > "${ofile}" &
+        
+    done
+
+    wait
+}
+if test @"${SCRNAME:-$(basename "$0")}" = @"slhtml-h"; then
+    case "${1}" in
+        ''|-h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
+        *)            slhtml_h "$@"; exit 0;;
+    esac
+fi
