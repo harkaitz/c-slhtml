@@ -39,14 +39,20 @@ slhtml_h() {
         echo >&2 "error: ${script} is not a file."
         return 1
     fi
-    
+
+    num=0
     for ifile in $(find "${idir}" -name "*.sl.*"); do
         
         ofile="${odir}/$(basename "${ifile}" | sed 's/\.sl\./.o./')"
         
         echo >&2 "${ofile} <- ${ifile}"
         slhtml "${script}" < "${ifile}" > "${ofile}" &
-        
+
+        num=$(( num + 1 ))
+        if test @"${num}" = @"10"; then
+            wait
+            num=0
+        fi
     done
 
     wait
